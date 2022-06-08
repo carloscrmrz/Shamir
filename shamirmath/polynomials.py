@@ -1,4 +1,4 @@
-import math.mod_math as mod_math
+from . import mod_math
 
 def eval_polynomial_at(x, polynomial, prime):
   acc = 0
@@ -22,9 +22,9 @@ def lagrange_interpolation(x, x_s, y_s, p):
   for i in range(k):
     others = list(x_s)
     current = others.pop(i)
-
     nums.append(product_inputs(x - a for a in others))
     dens.append(product_inputs(current - a for a in others))
   den = product_inputs(dens)
-  num = sum([mod_math.divmod(nums[i] * den * y_s[i] % p, dens[i], p) for i in range(k)])
-  return (mod_math.divmod(num,den,p) + p) % p
+  num = sum([mod_math.modular_division(nums[i] * den * y_s[i] % p, dens[i], p) for i in range(k)])
+
+  return (mod_math.modular_division(num,den,p) + p) % p
