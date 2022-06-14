@@ -1,7 +1,7 @@
 import ast
 import sys
-from . import iops as io
 import shamirmath.polynomials as poly
+from . import iops as io
 
 
 big_cousin = 208351617316091241234326746312124448251235562226470491514186331217050270460481
@@ -9,6 +9,8 @@ big_cousin = 2083516173160912412343267463121244482512355622264704915141863312170
 """
  Auxiliar function to convert strings directly into tuples.
  @param string the string to be converted into a tuple.
+
+ @return the parsed tuple
 """
 def parse_tuple(string):
     try:
@@ -33,7 +35,7 @@ def decipher_file(path_to_file, path_to_shares, minimum):
         for line in file:
             shares_list.append(parse_tuple(line))
     try: 
-        password = recover_secret(shares_list, minimum)
+        password = recover_secret(shares_list, minimum)[2:]
     except:
         print(f"need at least {minimum} shares")
         sys.exit(-1)
@@ -52,4 +54,4 @@ def recover_secret(shares, minimum, prime=big_cousin):
     if len(shares) < minimum:
         raise ValueError()
     x_s, y_s = zip(*shares)
-    return hex(poly.lagrange_interpolation(0, x_s, y_s, big_cousin))[2:]
+    return hex(poly.lagrange_interpolation(0, x_s[:minimum], y_s[:minimum], big_cousin))[2:]

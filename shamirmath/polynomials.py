@@ -1,4 +1,18 @@
 from . import mod_math
+import random
+
+big_cousin = 208351617316091241234326746312124448251235562226470491514186331217050270460481
+
+"""
+  Auxiliar function that creates a random polynomial.
+  @param independent the independent coefficient
+  @param rank the rank of the polynomial
+
+  @return a list of numbers that represent a polynomial
+"""
+def create_polynomial(independent, rank):
+  return [independent] + [random.SystemRandom().randint(0, big_cousin - 1)
+                                                      for i in range(rank - 1)]
 
 """
   Auxiliar function that handles evaluating a polynomial at a certain point.
@@ -50,3 +64,4 @@ def lagrange_interpolation(x, x_s, y_s, p):
     num = sum([mod_math.modular_division(nums[i] * den * y_s[i] %
               p, denominators[i], p) for i in range(k)])
     return (mod_math.modular_division(num, den, p) + p) % p
+

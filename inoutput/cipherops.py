@@ -3,10 +3,8 @@ from getpass import getpass
 import sys
 from . import iops as io
 import shamirmath.polynomials as poly
-import random
 
 big_cousin = 208351617316091241234326746312124448251235562226470491514186331217050270460481
-
 
 """
   Auxiliar function that helps us to create our shares' list, works by creating a random 
@@ -20,8 +18,8 @@ big_cousin = 2083516173160912412343267463121244482512355622264704915141863312170
 def create_shares(independent, minimum, shares):
     if minimum > shares:
         raise Exception()
-    polynomial = [independent] + [random.SystemRandom().randint(0, big_cousin - 1)
-                                                      for i in range(minimum - 1)]
+
+    polynomial = poly.create_polynomial(independent, minimum)
     f_x = [(i, poly.eval_polynomial_at(i, polynomial, big_cousin))
            for i in range(1, shares + 1)]
 
@@ -34,11 +32,20 @@ def create_shares(independent, minimum, shares):
   @return the hash in byte format
 """
 def create_hashed_password():
-    password = getpass("Please create a password: ").encode('utf-8')
-    hash = sha256()
-    hash.update(password)
-    hash.digest()
-    return hash.digest()
+  password = getpass("Please create a password: ").encode('utf-8')
+  return hash_password(password)
+
+"""
+  Auxiliar functions that handles the hashing (with SHA256) of a string.
+  @param password the string to be hashed
+
+  @return the hash in byte format
+"""
+def hash_password(password):
+  hash = sha256()
+  hash.update(password)
+  hash.digest()
+  return hash.digest()
 
 """
   Principal function, handles the logic of getting the secret, then making an encrypted copy of
