@@ -35,7 +35,7 @@ def decipher_file(path_to_file, path_to_shares, minimum):
         for line in file:
             shares_list.append(parse_tuple(line))
     try: 
-        password = recover_secret(shares_list, minimum)[2:]
+        password = recover_secret(shares_list, minimum)
     except:
         print(f"need at least {minimum} shares")
         sys.exit(-1)

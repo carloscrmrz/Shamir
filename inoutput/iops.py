@@ -4,19 +4,17 @@ from hashlib import md5
 from os import urandom
 
 """
-  Auxiliar function that handles the formatting of our password, it 
-  also encrypts it for more security (even though its on md5)
+  Auxiliar function that handles the formatting of our password,.
   @param password our password
-  @param salt a salt to protect our hash
   @param key_length the length of the key
   @param iv_length the length of our blocks.
 
   @return a tuple of bytes, for use in encrypting.
 """
-def derive_key_and_iv(password, salt, key_length, iv_length):
+def derive_key_and_iv(password, key_length, iv_length):
     d = d_i = b''
     while len(d) < key_length + iv_length:
-        d_i = md5(d_i + str.encode(password) + salt).digest() 
+        d_i = d_i + str.encode(password)
         d += d_i
     return d[:key_length], d[key_length:key_length+iv_length]    
 
@@ -29,10 +27,8 @@ def derive_key_and_iv(password, salt, key_length, iv_length):
 """
 def encrypt(in_file, out_file, password, key_length=32):
     bs = AES.block_size 
-    salt = urandom(bs) 
-    key, iv = derive_key_and_iv(password, salt, key_length, bs)
+    key, iv = derive_key_and_iv(password, key_length, bs)
     cipher = AES.new(key, AES.MODE_CBC, iv)
-    out_file.write(salt)
     finished = False
 
     while not finished:
@@ -52,8 +48,7 @@ def encrypt(in_file, out_file, password, key_length=32):
 """
 def decrypt(in_file, out_file, password, key_length=32):
     bs = AES.block_size
-    salt = in_file.read(bs)
-    key, iv = derive_key_and_iv(password, salt, key_length, bs)
+    key, iv = derive_key_and_iv(password, key_length, bs)
     cipher = AES.new(key, AES.MODE_CBC, iv)
     next_chunk = ''
     finished = False

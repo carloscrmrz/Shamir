@@ -28,6 +28,7 @@ def main():
                 cipher_decipher_flag = "decipher"
                 path_to_file = currentVal
                 path_to_shares = values[0]
+                minimum = int(values[2])
             if currentArg in ("-s", "--shares"):
                 shares = int(values[0])
                 minimum = int(values[1])
@@ -37,9 +38,10 @@ def main():
     except getopt.error as err:
         print(str(err))
 
-    if (shares < minimum):
-        print("Number of minimum is less than shares")
-        shares = minimum + minimum + 1
+    if (cipher_decipher_flag != "decipher"):
+        if (shares < minimum):
+            print("Number of minimum is less than shares")
+            shares = minimum + minimum + 1
 
     if (cipher_decipher_flag == "cipher"):
         cipher_file(path_to_file, shares, minimum)
